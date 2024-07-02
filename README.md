@@ -10,7 +10,11 @@ By Selman Karaosmanoglu
 
 # FastAPI PyTorch Deployment on AWS
 
-Converted from [official tutorial](https://pytorch.org/tutorials/intermediate/flask_rest_api_tutorial.html)
+## Overview
+
+This project demonstrates how to deploy a PyTorch model using FastAPI on AWS App Runner. It provides a scalable and efficient way to serve machine learning models. The project includes detailed instructions for building a Docker image on AWS Cloud9 and deploying it to AWS App Runner via AWS Elastic Container Registry (ECR). 
+
+The PyTorch project was converted from the official PyTorch tutorial using Flask by Noah Gift.
 
 Tasks:
 
@@ -31,6 +35,8 @@ docker run -p 127.0.0.1:8080:8080 54a55841624f
 ```
 
 ## Build, Push, Deploy Docker Image on AWS
+
+## Getting Started
 
 ### Create AWS Cloud9 Environment
 
