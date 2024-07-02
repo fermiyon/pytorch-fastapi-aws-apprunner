@@ -1,4 +1,14 @@
-## FastAPI PyTorch Example
+![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+
+By Selman Karaosmanoglu 
+
+## Date created
+2 July 2024
+
+# FastAPI PyTorch Deployment on AWS
 
 Converted from [official tutorial](https://pytorch.org/tutorials/intermediate/flask_rest_api_tutorial.html)
 
@@ -6,33 +16,147 @@ Tasks:
 
 1.  Run the fastapi app:  `python app.py`
 2.  Upload an image to classify, say a cat using the swagger docs url:  /docs
-3.  Deploy to AWS using the free tier and the AWS App Runner service
+3.  Deploy to AWS and the AWS App Runner service
 
 ## Notes on Running docker with PyTorch and FastAPI
-`docker build .`
 
-Note this is your container name use:  `docker image ls` to find (replace id with your image id):
+```bash
+docker build .
+```
 
-`docker run -p 127.0.0.1:8080:8080 54a55841624f`
+Note use: `docker images` to find (replace id with the image id):
 
-![fastapi-step1](https://user-images.githubusercontent.com/58792/131587003-f5667c28-7cbe-402e-8795-f32a6ca9a4d1.png)
-![fastapi-step2](https://user-images.githubusercontent.com/58792/131587286-341e795c-76dc-46a1-8ee9-528134410935.png)
-![fastapi-step3](https://user-images.githubusercontent.com/58792/131587004-198ad6d5-2197-4de5-a6dd-4eb3c41e675e.png)
-![fastapi-step4](https://user-images.githubusercontent.com/58792/131587005-866b0974-63d7-4fed-abf2-9c634721669f.png)
+```bash
+docker run -p 127.0.0.1:8080:8080 54a55841624f
+```
 
+## Build, Push, Deploy Docker Image on AWS
 
-## Verify Swagger Working
+### Create AWS Cloud9 Environment
 
+![sc](resources/1-create-cloud9-env.png)å
+
+![sc](resources/2-create-cloud9-env.png)
+
+### Create Amazon Elastic Container Registry
+
+![sc](resources/3-ecr.png)
+
+![sc](resources/4-ecr.png)
+
+![sc](resources/5-ecr.png)
+
+### Build and Push Docker Image on AWS
+
+#### Clone Git Repository to AWS Cloud9
+
+```bash
+git clone ..
+```
+
+#### Create virtual environemnt
+
+```bash
+python3 -m venv ~/.venv
+```
+
+#### Activate environment
+
+```bash
+source ~/.venv/bin/activate`
+```
+
+![sc](resources/6-cloud9.png)
+
+#### Increase AWS Cloud9 Volume Size
+
+Go to the settings of the EC2 instance of Cloud9 and increase the volume size
+
+![sc](resources/7-ec2-volume-size.png)
+
+#### Reboot Cloud9
+
+```bash
+sudo reboot
+```
+
+![sc](resources/8-reboot-cloud9.png)
+
+- Check volume size and build docker image
+
+```bash
+df --human-readable
+```
+
+```bash
+docker build -t pytorch .
+```
+
+![sc](resources/9-cloud9-docker-build.png)
+ 
+#### Run an instance of the Docker Image and preview it
+
+```bash
+docker images
+```
+
+```bash
+docker run -p 127.0.0.1:8080:8080 <docker image id>
+```
+
+Click Preview button of AWS Cloud9 and go to /docs page of the FastAPI app in preview pane as shown in the screenshot below
+
+![sc](resources/10-cloud9-run-preview.png)
+
+#### View push commands in AWS Elastic Container Registry
+
+![sc](resources/11-ecr-push-commands.png)
+
+![sc](resources/12-ecr-push-commands.png)
+
+#### Apply Docker push commands via AWS Cloud9 instance to AWS ECR
+
+Login
+
+```bash
+aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 176839071578.dkr.ecr.eu-west-2.amazonaws.com
+```
+
+Docker Tag
+
+```bash
+docker tag pytorch:latest 176839071578.dkr.ecr.eu-west-2.amazonaws.com/pytorch:latest
+```
+
+Docker Push
+
+```bash
+docker push 176839071578.dkr.ecr.eu-west-2.amazonaws.com/pytorch:latest
+```
+
+![sc](resources/13-cloud9-push-commands.png)
+
+#### Check Amazon Elastic Container Registry
+
+![sc](resources/14-aws-ecr-images.png)
+
+### Create AWS App Runner Service
+
+![sc](resources/15-aws-app-runner.png)
+
+![sc](resources/16-aws-app-runner.png)
+
+![sc](resources/17-aws-app-runner.png)
+
+### Verify Swagger Working
 
 Go to /docs url
+
+![sc](resources/18-success.png)
 
 
 ### References
 
-* [Watch PyTorch walkthrough on YouTube](https://www.youtube.com/watch?v=-CoOotWG30E)
-* [Watch GitHub Universe Talk:  Teaching MLOps at scale with Github](https://watch.githubuniverse.com/on-demand/ec17cbb3-0a89-4764-90a5-9debb58515f8)
-* [Building Cloud Computing Solutions at Scale Specialization](https://www.coursera.org/specializations/building-cloud-computing-solutions-at-scale)
-* [Python, Bash and SQL Essentials for Data Engineering Specialization](https://www.coursera.org/learn/web-app-command-line-tools-for-data-engineering-duke)
-* [Implementing MLOps in the Enterprise](https://learning.oreilly.com/library/view/implementing-mlops-in/9781098136574/)
-* [Practical MLOps: Operationalizing Machine Learning Models](https://www.amazon.com/Practical-MLOps-Operationalizing-Machine-Learning/dp/1098103017)
-* [Coursera-Dockerfile](https://gist.github.com/noahgift/82a34d56f0a8f347865baaa685d5e98d)
+* [Resize Cloud9 Instance Root Volume](https://ec2spotworkshops.com/ecs-spot-capacity-providers/workshopsetup/resize_ebs.html)
+
+* Duke University - Virtualization, Docker, Kubernetes Data Engineering Program
