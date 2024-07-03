@@ -23,6 +23,15 @@ Tasks:
 2.  Upload an image to classify, say a cat using the swagger docs url:  /docs
 3.  Deploy to AWS and the AWS App Runner service
 
+## Architecture
+
+```mermaid
+flowchart TD;
+    A[AWS Cloud9] -->|Docker push| B[Amazon Elastic Container Registry];
+    B -->|Deploy| C[AWS App Runner];
+    D[FastAPI Docs Swagger UI] -->|Request| C;
+```
+
 ## Notes on Running docker with PyTorch and FastAPI
 
 ```bash
