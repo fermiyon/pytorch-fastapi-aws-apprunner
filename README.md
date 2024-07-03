@@ -164,7 +164,7 @@ docker push 176839071578.dkr.ecr.eu-west-2.amazonaws.com/pytorch:latest
 
 ![sc](resources/17-aws-app-runner.png)
 
-### Verify Swagger Working
+### Verify the working app with the FastAPI Swagger UI
 
 Go to /docs url
 
